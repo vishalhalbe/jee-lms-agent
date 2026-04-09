@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { LatexRenderer } from "./LatexRenderer"
+import { SolutionPanel } from "./SolutionPanel"
 import type { Question } from "@/lib/dal/types"
 
 const DIFFICULTY_STYLE = {
@@ -118,6 +119,13 @@ export function QuestionCard({ question, index }: QuestionCardProps) {
           </span>
         </div>
       </div>
+
+      {/* AI Solution panel — only visible after answer is revealed */}
+      <SolutionPanel
+        questionId={question.id}
+        questionContent={question.contentLatex}
+        revealed={revealed}
+      />
     </article>
   )
 }
