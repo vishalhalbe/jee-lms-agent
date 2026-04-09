@@ -91,10 +91,12 @@ export async function POST(req: Request): Promise<Response> {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-store",
       },
     })
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to generate solution"
-    return Response.json({ error: message }, { status: 500 })
+    // Log the real error server-side; never expose upstream details to clients
+    console.error("[AI solution]", err instanceof Error ? err.message : err)
+    return Response.json({ error: "Failed to generate solution" }, { status: 500 })
   }
 }

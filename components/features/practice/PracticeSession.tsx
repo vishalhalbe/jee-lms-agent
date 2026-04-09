@@ -228,7 +228,13 @@ function ActiveScreen({
         <GlassButton
           variant="destructive"
           size="sm"
-          onClick={onSubmit}
+          onClick={() => {
+            const unanswered = questions.length - Object.keys(answers).length
+            const msg = unanswered > 0
+              ? `You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Submit anyway?`
+              : "Submit the test? This cannot be undone."
+            if (window.confirm(msg)) onSubmit()
+          }}
           aria-label="Submit test"
         >
           Submit Test

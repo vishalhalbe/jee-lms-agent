@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Sparkles, Loader2, AlertCircle, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { LatexRenderer } from "./LatexRenderer"
@@ -17,8 +17,20 @@ export function SolutionPanel({ questionId, questionContent, revealed }: Solutio
   const [status, setStatus] = useState<Status>("idle")
   const [solution, setSolution] = useState("")
   const [errorMsg, setErrorMsg] = useState("")
+  const abortRef = useRef<AbortController | null>(null)
+
+  // Cancel any in-flight stream when component unmounts
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort()
+    }
+  }, [])
 
   async function fetchSolution() {
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
+
     setStatus("loading")
     setSolution("")
     setErrorMsg("")
@@ -28,39 +40,40 @@ export function SolutionPanel({ questionId, questionContent, revealed }: Solutio
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ questionId, questionContent }),
+        signal: controller.signal,
       })
 
       if (!res.ok) {
-        let msg = "Failed to generate solution"
-        try {
-          const data: unknown = await res.json()
-          if (data !== null && typeof data === "object" && "error" in data && typeof (data as { error: unknown }).error === "string") {
-            msg = (data as { error: string }).error
-          }
-        } catch {
-          // use default message
-        }
-        setErrorMsg(msg)
+        setErrorMsg("Failed to generate solution")
         setStatus("error")
         return
       }
 
-      const reader = res.body!.getReader()
+      if (!res.body) {
+        setErrorMsg("No response body received")
+        setStatus("error")
+        return
+      }
+
+      const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let accumulated = ""
 
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        accumulated += decoder.decode(value, { stream: true })
-        setSolution(accumulated)
-        setStatus("streaming")
+      try {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          accumulated += decoder.decode(value, { stream: true })
+          setSolution(accumulated)
+          setStatus("streaming")
+        }
+        setStatus("done")
+      } finally {
+        reader.cancel()
       }
-
-      setStatus("done")
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Network error"
-      setErrorMsg(msg)
+      if (err instanceof Error && err.name === "AbortError") return
+      setErrorMsg("Network error. Please try again.")
       setStatus("error")
     }
   }

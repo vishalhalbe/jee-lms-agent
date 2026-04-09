@@ -41,6 +41,18 @@ function tokenise(content: string): { type: "text" | "inline" | "display"; value
   return tokens
 }
 
+// Escape plain-text segments before injecting into innerHTML to prevent XSS.
+// KaTeX output is already safe; only the text tokens need escaping.
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/\n/g, "<br/>")
+}
+
 function renderKatex(latex: string, displayMode: boolean): string {
   try {
     return katex.renderToString(latex, {
@@ -62,7 +74,7 @@ export function LatexRenderer({ content, className, block }: LatexRendererProps)
     const tokens = tokenise(content)
     const html = tokens
       .map((t) => {
-        if (t.type === "text") return t.value.replace(/\n/g, "<br/>")
+        if (t.type === "text") return escapeHtml(t.value)
         return renderKatex(t.value, t.type === "display")
       })
       .join("")

@@ -1,3 +1,4 @@
+import "server-only"
 import type { Question, QuestionFilters, PaginatedResult } from "./types"
 
 const USE_MOCK = process.env.USE_MOCK_DATA === "true"
