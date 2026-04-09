@@ -35,18 +35,23 @@
 
 ---
 
-## Phase 2: Course & Content System
-*Students can browse subjects, chapters, and read lessons.*
+## Phase 2: PYQ Bank & Content System
+*Students learn exclusively through Previous Year Questions — no lessons or theory content.*
 
-- [ ] **2.1** Create `app/(app)/courses/page.tsx` — subject grid (Physics, Chemistry, Math)
-- [ ] **2.2** Create `app/(app)/courses/[subject]/page.tsx` — chapter list
-- [ ] **2.3** Create `app/(app)/courses/[subject]/[chapter]/page.tsx` — lesson viewer
-- [ ] **2.4** Create `app/api/courses/route.ts` — fetch subjects + chapters
-- [ ] **2.5** Create `lib/db/seed.ts` — seed subjects, chapters (NCERT syllabus)
-- [ ] **2.6** Seed initial question bank (sample questions per chapter)
-- [ ] **2.7** Create admin CMS pages at `app/(app)/admin/` (content CRUD)
+- [ ] **2.1** Create `app/(app)/subjects/page.tsx` — subject grid (Physics, Chemistry, Math) with question counts
+- [ ] **2.2** Create `app/(app)/subjects/[subject]/page.tsx` — chapters with PYQ counts per chapter
+- [ ] **2.3** Create `app/(app)/subjects/[subject]/[chapter]/page.tsx` — PYQ browser for that chapter (filter by year, difficulty)
+- [ ] **2.4** Create `app/api/questions/route.ts` — fetch PYQs with filters (subject, chapter, year, exam type)
+- [ ] **2.5** Create `lib/db/seed.ts` — seed subjects, chapters (NCERT syllabus structure)
+- [ ] **2.6** Create `lib/db/seed-pyq.ts` — bulk import PYQs from JSON; each question has `content_latex`, `options_latex[]`, `correct_index`, `images[]`, `year`, `exam_type`, `subject`, `chapter`, `topic`, `difficulty`
+- [ ] **2.7** Create `app/(app)/admin/pyq-import/page.tsx` — admin UI to upload JSON/CSV PYQ data
+- [ ] **2.8** Create `app/api/admin/pyq-import/route.ts` — parse, validate and bulk-insert PYQs
+- [ ] **2.9** Create `app/(app)/admin/questions/page.tsx` — CMS to view/edit/tag questions, attach images
+- [ ] **2.10** Create `components/features/questions/QuestionCard.tsx` — renders question with KaTeX + mhchem + images
 
-**Risks:** Question bank seeding is time-intensive; start with 50 questions per subject.
+**No lessons, no theory.** Learning happens through solving PYQs, reviewing AI solutions, and tracking topic-wise performance.
+**PYQ Data Format:** Structured JSON with LaTeX math (`$$...$$`), chemical formulas (`\ce{}`), image URLs.
+**Image Storage:** Cloudflare R2 (free tier) or direct URLs from source.
 
 ---
 
@@ -54,14 +59,18 @@
 *Students can take chapter tests and full mock exams with auto-grading.*
 
 - [ ] **3.1** Create `app/(app)/practice/page.tsx` — test type picker (chapter, full mock, previous year)
-- [ ] **3.2** Create `app/(app)/practice/[testId]/page.tsx` — test runner UI (timer, question nav, submit)
-- [ ] **3.3** Create `app/(app)/practice/[testId]/results/page.tsx` — score, explanations, topic breakdown
-- [ ] **3.4** Create `app/api/tests/route.ts` — generate/fetch test
+- [ ] **3.2** Create `app/(app)/practice/[testId]/page.tsx` — test runner UI (timer, question nav, submit) with full math/chemistry/image rendering
+- [ ] **3.3** Create `app/(app)/practice/[testId]/results/page.tsx` — score, AI-generated solutions, topic breakdown with rendered math
+- [ ] **3.4** Create `app/api/tests/route.ts` — fetch PYQ test (by year, subject, chapter)
 - [ ] **3.5** Create `app/api/tests/[testId]/submit/route.ts` — grade submission, write to test_attempts + topic_progress
 - [ ] **3.6** Implement negative marking logic (+4/-1/0)
-- [ ] **3.7** Write Vitest tests for grading logic
+- [ ] **3.7** Create `app/api/ai/solution/route.ts` — call Gemini Flash to generate step-by-step solution for a question; preserve LaTeX, chemical equations, diagrams in output
+- [ ] **3.8** Create `components/features/practice/QuestionRenderer.tsx` — renders question with KaTeX (math), mhchem (chemistry), next/image (inline images)
+- [ ] **3.9** Create `components/features/practice/SolutionRenderer.tsx` — renders AI solution preserving all formatting
+- [ ] **3.10** Write Vitest tests for grading logic
 
 **Risks:** Test runner state (timer, answers) needs careful client-side management; use `useReducer`.
+**AI Solutions:** Gemini Flash 1.5 via OpenRouter — proven to handle math/chemistry formatting well.
 
 ---
 

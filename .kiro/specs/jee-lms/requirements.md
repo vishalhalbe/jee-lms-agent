@@ -23,19 +23,30 @@ A SaaS Learning Management System for JEE Mains and JEE Advanced preparation, po
 - FR-1.3: Role-based access (student vs admin)
 - FR-1.4: Protected routes via Clerk middleware
 
-### FR-2: Course & Content System
+### FR-2: PYQ Bank & Content System
 - FR-2.1: Subjects: Physics, Chemistry, Mathematics
-- FR-2.2: Chapters per subject (NCERT-aligned)
-- FR-2.3: Lessons (text + video embed)
-- FR-2.4: Question bank — tagged by subject, chapter, topic, difficulty, year
-- FR-2.5: Admin CMS to manage content
+- FR-2.2: Chapters per subject (NCERT-aligned structure for navigation only)
+- FR-2.3: **No lessons or theory** — learning exclusively through Previous Year Questions (PYQs)
+- FR-2.4: PYQ bank — tagged by subject, chapter, topic, difficulty, year, exam type (Mains/Advanced)
+- FR-2.5: Each question stores: LaTeX content, LaTeX options, correct index, inline images, explanation tags
+- FR-2.6: Admin bulk import PYQs via JSON/CSV upload
+- FR-2.7: Admin CMS to edit questions, attach images, update tags
+
+### FR-2B: Math, Chemistry & Image Rendering
+- FR-2B.1: All pages rendering questions/solutions must support **KaTeX** for math (inline `$...$` and block `$$...$$`)
+- FR-2B.2: **mhchem** plugin for chemical equations (`\ce{H2O}`, `\ce{->}`, reaction arrows)
+- FR-2B.3: Inline question images via `next/image` with zoom support
+- FR-2B.4: AI-generated solutions must preserve LaTeX and `\ce{}` formatting through the full pipeline (prompt → Gemini → response → render)
+- FR-2B.5: Copy-paste of math symbols must work (KaTeX renders as accessible HTML, not canvas)
 
 ### FR-3: Practice Tests
-- FR-3.1: Chapter-wise tests
-- FR-3.2: Full-length mock exams (JEE Mains pattern: 90 questions, 3 hours)
-- FR-3.3: JEE Advanced mock (Paper 1 + Paper 2 pattern)
-- FR-3.4: Auto-grading with detailed solution explanations
-- FR-3.5: Negative marking (-1 for wrong, +4 for correct, 0 for skipped)
+- FR-3.1: Chapter-wise PYQ tests (filtered by chapter)
+- FR-3.2: Full-length mock exams using real PYQs (JEE Mains pattern: 90 questions, 3 hours)
+- FR-3.3: JEE Advanced mock using real PYQs (Paper 1 + Paper 2 pattern)
+- FR-3.4: Year-wise PYQ tests (e.g., "JEE Mains 2023 Paper 1")
+- FR-3.5: Auto-grading with AI-generated step-by-step solutions (Gemini Flash)
+- FR-3.6: Negative marking (-1 for wrong, +4 for correct, 0 for skipped — Mains); Advanced has varied marking
+- FR-3.7: Solutions rendered with full math/chemistry formatting (KaTeX + mhchem)
 
 ### FR-4: AI Question Prediction
 - FR-4.1: Analyze past papers (2010–2025) for topic frequency trends

@@ -6,8 +6,10 @@
 |---|---|---|
 | **claude-sonnet-4-6** (via OpenRouter) | Main coding, orchestration, complex logic | Mid |
 | **claude-haiku-4-5** (via OpenRouter) | Simple tasks, boilerplate, repetitive code | Low |
-| **deepseek/deepseek-coder** (via OpenRouter) | Bulk code generation, seed data, SQL | Very Low |
-| **google/gemini-flash-1.5** (via OpenRouter) | Long context reads, doc analysis | Very Low |
+| **google/gemini-flash-1.5** (via OpenRouter) | **AI solution generation** — proven math/chemistry/LaTeX formatting | Very Low |
+| **deepseek/deepseek-coder** (via OpenRouter) | Bulk data scripts, SQL migrations | Very Low |
+
+> **Key decision:** Gemini Flash 1.5 generates all question solutions. It handles LaTeX, `\ce{}` chemical equations, and structured step-by-step reasoning well. Solutions are generated on-demand and cached in DB — not regenerated per user.
 
 ---
 
@@ -52,36 +54,46 @@
 ---
 
 ### Phase 2 — Course & Content System
-**Complexity:** Medium-High — DB queries, seed data, CMS
-**Strategy:** Sonnet for UI+queries, DeepSeek for bulk seed data generation
+**Complexity:** Medium-High — DB queries, PYQ import pipeline, math rendering, CMS
+**Strategy:** Sonnet for UI+queries, DeepSeek for seed scripts, Gemini for solution generation
 
 | Task | Model | Est. Tokens |
 |---|---|---|
 | Courses page (subject grid) | Sonnet | ~4,000 |
 | Subject page (chapter list) | Sonnet | ~3,000 |
-| Chapter page (lesson viewer) | Sonnet | ~4,000 |
+| Chapter page (lesson viewer + math) | Sonnet | ~5,000 |
 | API route courses | Haiku | ~1,500 |
-| Seed script (subjects+chapters) | DeepSeek | ~8,000 |
-| Question bank seed (150 Qs) | DeepSeek | ~20,000 |
-| Admin CMS pages | Sonnet | ~8,000 |
-| **Phase 2 Total** | | **~48,500** |
+| Seed script (subjects+chapters) | DeepSeek | ~5,000 |
+| PYQ import pipeline (JSON→DB) | Sonnet | ~6,000 |
+| Admin PYQ import UI | Sonnet | ~4,000 |
+| Admin CMS (edit questions) | Sonnet | ~6,000 |
+| **Phase 2 Total** | | **~34,500** |
+
+> No AI used to generate questions. PYQs are imported from structured data (JSON/CSV) supplied by user.
 
 ---
 
-### Phase 3 — Practice Tests
-**Complexity:** High — complex state machine, grading logic, timer UI
-**Strategy:** Sonnet throughout, Haiku for results page, Vitest via Sonnet
+### Phase 3 — Practice Tests + AI Solutions
+**Complexity:** High — complex state machine, grading logic, math rendering, Gemini solution pipeline
+**Strategy:** Sonnet for UI+API, Gemini Flash for solution generation, Haiku for simple pages
 
 | Task | Model | Est. Tokens |
 |---|---|---|
 | Test picker page | Haiku | ~2,000 |
-| Test runner UI (timer, nav) | Sonnet | ~8,000 |
-| Results page | Sonnet | ~5,000 |
-| API: generate test | Sonnet | ~4,000 |
+| Test runner UI (timer, nav, math render) | Sonnet | ~10,000 |
+| QuestionRenderer component | Sonnet | ~4,000 |
+| SolutionRenderer component | Sonnet | ~4,000 |
+| Results page (with solutions) | Sonnet | ~5,000 |
+| API: fetch PYQ test | Haiku | ~2,000 |
 | API: submit + grade | Sonnet | ~5,000 |
+| API: AI solution (Gemini) | Sonnet | ~4,000 |
 | Negative marking logic | Sonnet | ~2,000 |
 | Vitest grading tests | Sonnet | ~4,000 |
-| **Phase 3 Total** | | **~30,000** |
+| **Phase 3 Total** | | **~42,000** |
+
+**Solution generation budget (runtime):**
+Per solution call to Gemini Flash: ~2,000–4,000 tokens
+Solutions cached in DB after first generation — never called twice for same question.
 
 ---
 
@@ -172,8 +184,29 @@
 # Use in lib/ai/client.ts
 SONNET_MODEL=anthropic/claude-sonnet-4-5
 HAIKU_MODEL=anthropic/claude-haiku-4-5
-DEEPSEEK_MODEL=deepseek/deepseek-coder
-GEMINI_MODEL=google/gemini-flash-1.5
+GEMINI_MODEL=google/gemini-flash-1.5        # Primary: solution generation
+DEEPSEEK_MODEL=deepseek/deepseek-coder      # Secondary: bulk scripts only
+```
+
+## AI Solution Pipeline (Runtime)
+
+```
+User requests solution for Question ID
+       ↓
+Check DB: solutions table for question_id
+       ↓ (cache miss)
+Build prompt: question_latex + options_latex + correct_index
+       ↓
+Call Gemini Flash 1.5 via OpenRouter
+  System: "You are a JEE expert. Generate step-by-step solution.
+           Use LaTeX for math ($$...$$), \ce{} for chemistry.
+           Include diagram descriptions where needed."
+       ↓
+Parse response — validate LaTeX is well-formed
+       ↓
+Store in solutions table (question_id, solution_latex, model, generated_at)
+       ↓
+Return to client → SolutionRenderer (KaTeX + mhchem)
 ```
 
 ## Rules
