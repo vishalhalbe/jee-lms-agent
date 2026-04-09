@@ -39,7 +39,7 @@ export const userLevelEnum = pgEnum("user_level", ["beginner", "intermediate", "
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   clerkId: text("clerk_id").notNull().unique(),
-  email: text("email").notNull(),
+  email: text("email").notNull().unique(),
   name: text("name"),
   targetYear: smallint("target_year"),
   level: userLevelEnum("level").default("beginner"),
@@ -58,15 +58,22 @@ export const subjects = pgTable("subjects", {
 
 // ─── Chapters ────────────────────────────────────────────────────────────────
 
-export const chapters = pgTable("chapters", {
-  id: serial("id").primaryKey(),
-  subjectId: integer("subject_id")
-    .notNull()
-    .references(() => subjects.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  slug: text("slug").notNull(),
-  order: smallint("order").notNull(),
-})
+export const chapters = pgTable(
+  "chapters",
+  {
+    id: serial("id").primaryKey(),
+    subjectId: integer("subject_id")
+      .notNull()
+      .references(() => subjects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    order: smallint("order").notNull(),
+  },
+  (t) => [
+    index("chapters_subject_order_idx").on(t.subjectId, t.order),
+    uniqueIndex("chapters_subject_slug_idx").on(t.subjectId, t.slug),
+  ]
+)
 
 // ─── Questions (PYQ Bank) ────────────────────────────────────────────────────
 

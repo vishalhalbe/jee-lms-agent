@@ -44,7 +44,7 @@ export function StatCard({ label, value, sub, icon: Icon, color = "orange", tren
     <GlassCard className={cn("p-5 space-y-3", c.glow, c.border)}>
       <div className="flex items-start justify-between">
         <div className={cn("p-2 rounded-lg", c.bg)}>
-          <Icon className={cn("size-4", c.icon)} />
+          <Icon className={cn("size-4", c.icon)} aria-hidden="true" />
         </div>
         {trend && (
           <span className={cn(
