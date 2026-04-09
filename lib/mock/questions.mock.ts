@@ -1,0 +1,246 @@
+import type { Question } from "@/lib/dal/types"
+
+// Real PYQ-style questions with LaTeX and chemistry notation.
+// contentLatex uses $...$ for inline and $$...$$ for display math.
+// Chemistry uses \ce{} notation (mhchem).
+
+export const MOCK_QUESTIONS: Question[] = [
+  // ── Physics: Current Electricity (chapterId=16) ─────────────────────────────
+  {
+    id: 1,
+    subjectId: 1,
+    chapterId: 16,
+    topic: "Ohm's Law & Resistance",
+    contentLatex:
+      "A wire of resistance $R$ is cut into $n$ equal parts. These parts are then connected in parallel. The equivalent resistance of the combination is",
+    optionsLatex: [
+      "$\\dfrac{R}{n^2}$",
+      "$\\dfrac{nR}{1}$",
+      "$\\dfrac{R}{n}$",
+      "$n^2 R$",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "easy",
+    year: 2023,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["resistance", "parallel", "ohm"],
+  },
+  {
+    id: 2,
+    subjectId: 1,
+    chapterId: 16,
+    topic: "Kirchhoff's Laws",
+    contentLatex:
+      "In the circuit shown, the current through the $4\\,\\Omega$ resistor is $1\\,\\text{A}$. The voltage across the $8\\,\\Omega$ resistor is",
+    optionsLatex: ["$4\\,\\text{V}$", "$8\\,\\text{V}$", "$2\\,\\text{V}$", "$16\\,\\text{V}$"],
+    correctIndex: 1,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "medium",
+    year: 2022,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["kirchhoff", "voltage"],
+  },
+
+  // ── Physics: Modern Physics (chapterId=21) ───────────────────────────────────
+  {
+    id: 3,
+    subjectId: 1,
+    chapterId: 21,
+    topic: "Photoelectric Effect",
+    contentLatex:
+      "The work function of a metal is $4.2\\,\\text{eV}$. If light of wavelength $2000\\,\\text{Å}$ is incident on it, the maximum kinetic energy of the emitted photoelectrons is ($h = 6.63 \\times 10^{-34}\\,\\text{J·s}$)",
+    optionsLatex: [
+      "$1.0\\,\\text{eV}$",
+      "$2.0\\,\\text{eV}$",
+      "$3.0\\,\\text{eV}$",
+      "$0.5\\,\\text{eV}$",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "hard",
+    year: 2024,
+    examType: "jee_advanced",
+    marksCorrect: 4,
+    marksWrong: -2,
+    tags: ["photoelectric", "planck", "work function"],
+  },
+
+  // ── Chemistry: Chemical Bonding (chapterId=25) ──────────────────────────────
+  {
+    id: 4,
+    subjectId: 2,
+    chapterId: 25,
+    topic: "Hybridisation",
+    contentLatex:
+      "The hybridisation of the central atom in \\ce{XeF4} and the shape of the molecule are respectively",
+    optionsLatex: [
+      "$sp^3d^2$, square planar",
+      "$sp^3d$, trigonal bipyramidal",
+      "$sp^3d^2$, octahedral",
+      "$sp^3$, tetrahedral",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "medium",
+    year: 2023,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["hybridisation", "VSEPR", "xenon"],
+  },
+  {
+    id: 5,
+    subjectId: 2,
+    chapterId: 25,
+    topic: "Bond Order",
+    contentLatex:
+      "The bond order of \\ce{O2^2-} (peroxide ion) is",
+    optionsLatex: ["$1$", "$2$", "$1.5$", "$0.5$"],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "easy",
+    year: 2022,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["bond order", "MOT", "peroxide"],
+  },
+
+  // ── Chemistry: Equilibrium (chapterId=28) ───────────────────────────────────
+  {
+    id: 6,
+    subjectId: 2,
+    chapterId: 28,
+    topic: "Le Chatelier's Principle",
+    contentLatex:
+      "For the reaction \\ce{N2(g) + 3H2(g) <=> 2NH3(g)}, $\\Delta H = -92\\,\\text{kJ/mol}$. The yield of \\ce{NH3} is favoured by",
+    optionsLatex: [
+      "High pressure and low temperature",
+      "Low pressure and high temperature",
+      "High pressure and high temperature",
+      "Low pressure and low temperature",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "medium",
+    year: 2023,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["equilibrium", "Haber process", "Le Chatelier"],
+  },
+
+  // ── Mathematics: Integrals (chapterId=58) ───────────────────────────────────
+  {
+    id: 7,
+    subjectId: 3,
+    chapterId: 58,
+    topic: "Definite Integration",
+    contentLatex:
+      "$$\\int_0^{\\pi/2} \\frac{\\sin x}{\\sin x + \\cos x}\\,dx =$$",
+    optionsLatex: ["$\\dfrac{\\pi}{4}$", "$\\dfrac{\\pi}{2}$", "$0$", "$1$"],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "medium",
+    year: 2024,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["definite integral", "king property"],
+  },
+  {
+    id: 8,
+    subjectId: 3,
+    chapterId: 58,
+    topic: "Integration by Parts",
+    contentLatex:
+      "$$\\int x e^x\\,dx =$$",
+    optionsLatex: [
+      "$e^x(x - 1) + C$",
+      "$e^x(x + 1) + C$",
+      "$xe^x + C$",
+      "$e^x - x + C$",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "easy",
+    year: 2022,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["integration by parts"],
+  },
+
+  // ── Mathematics: Complex Numbers (chapterId=51) ──────────────────────────────
+  {
+    id: 9,
+    subjectId: 3,
+    chapterId: 51,
+    topic: "Argument & Modulus",
+    contentLatex:
+      "If $z = \\dfrac{1+2i}{1-i}$, then the argument of $z$ is",
+    optionsLatex: [
+      "$\\dfrac{3\\pi}{4}$",
+      "$\\dfrac{\\pi}{4}$",
+      "$\\dfrac{\\pi}{2}$",
+      "$-\\dfrac{\\pi}{4}$",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "hard",
+    year: 2024,
+    examType: "jee_advanced",
+    marksCorrect: 4,
+    marksWrong: -2,
+    tags: ["complex numbers", "argument"],
+  },
+
+  // ── Physics: Thermodynamics (chapterId=10) ───────────────────────────────────
+  {
+    id: 10,
+    subjectId: 1,
+    chapterId: 10,
+    topic: "First Law of Thermodynamics",
+    contentLatex:
+      "One mole of an ideal gas undergoes an isothermal expansion at $300\\,\\text{K}$ from $V_1$ to $2V_1$. The work done by the gas is ($R = 8.314\\,\\text{J mol}^{-1}\\text{K}^{-1}$)",
+    optionsLatex: [
+      "$1729\\,\\text{J}$",
+      "$1246\\,\\text{J}$",
+      "$2494\\,\\text{J}$",
+      "$864\\,\\text{J}$",
+    ],
+    correctIndex: 0,
+    correctNumeric: null,
+    questionType: "mcq_single",
+    images: [],
+    difficulty: "medium",
+    year: 2023,
+    examType: "jee_mains",
+    marksCorrect: 4,
+    marksWrong: -1,
+    tags: ["thermodynamics", "isothermal", "work done"],
+  },
+]
